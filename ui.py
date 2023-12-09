@@ -6,7 +6,7 @@ class TicTacToeUI:
         self.master = master
         self.master.title("3D Tic Tac Toe")
         self.master.state("zoomed")  # Open the window maximized
-        self.master.geometry("400x300")
+        self.master.geometry("400x400")
 
         # Heading
         self.heading_label = tk.Label(self.master, text="3D Tic Tac Toe", font=("Helvetica", 20, "bold"))
@@ -28,7 +28,7 @@ class TicTacToeUI:
 
         # Rules Button
         self.rules_button = tk.Button(self.master, text="Rules", command=self.show_rules, bg="yellow", width=10, height=2)
-        self.rules_button.place(x=20, y=250)
+        self.rules_button.place(x=20, y=350)
 
     def start_game(self, difficulty):
         if difficulty == "easy":
@@ -60,11 +60,16 @@ class TicTacToeUI:
         for widget in self.master.winfo_children():
             widget.destroy()
 
-        # Create 4x4 buttons for the Tic Tac Toe board
+        # Create a 4x4 grid repeated vertically with double line breaks between each four rows
+        a = 0
         for i in range(4):
-            for j in range(4):
-                button = tk.Button(self.master, text="", width=10, height=2)
-                button.grid(row=i, column=j, padx=5, pady=5)
+            # Create 4x4 buttons for each row
+            for row in range(4):
+                for col in range(4):
+                    button = tk.Button(self.master, text=str(a), width=3, height=1)
+                    button.grid(row=(i * 4) + row, column=col, padx=5, pady=5)
+                    a += 1
+
 
 if __name__ == "__main__":
     root = tk.Tk()
