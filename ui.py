@@ -56,19 +56,86 @@ class TicTacToeUI:
         messagebox.showinfo("Rules", "Your rules here.")
 
     def show_game_board(self):
+
+        def button_click(button_names):
+            x, y, z = map(int, button_names[7:])  # Extracting x, y, z from the button name
+            result_text = f"x = {x} , y = {y}, z = {z}"
+            right_heading_label.config(text=result_text)
+
         # Destroy existing widgets in the main window
         for widget in self.master.winfo_children():
             widget.destroy()
 
-        # Create a 4x4 grid repeated vertically with double line breaks between each four rows
+        button_text_first_part = [str(i) for i in range(1, 17)]
+        button_text_second_part = [str(i) for i in range(17, 33)]
+        button_text_third_part = [str(i) for i in range(33, 49)]
+        button_text_fourth_part = [str(i) for i in range(49, 65)]
+
+        # Creates cells for the 4x4 grid in layer 1 of the 3d tic tac toe board (Cells 1-16)
         a = 0
-        for i in range(4):
-            # Create 4x4 buttons for each row
-            for row in range(4):
-                for col in range(4):
-                    button = tk.Button(self.master, text=str(a), width=3, height=1)
-                    button.grid(row=(i * 4) + row, column=col, padx=5, pady=5)
-                    a += 1
+        for row in range(0,4):
+            for col in range(4):
+                button_name = f"button_{row+1}{col+1}1"  # Using f-string to create the button identifier
+                button = tk.Button(self.master, text=button_text_first_part[a], width=3, height=1, name=button_name, command=lambda name=button_name: button_click(name))
+                button.grid(row=row, column=col, padx=5, pady=5)
+                a += 1
+
+        # Adds divider between the first and second layer
+        for col in range(4):
+            label = tk.Label(self.master, text=".", width=1, height=1)
+            label.grid(row=4, column=col)
+
+        # Creates cells for the 4x4 grid in layer 2 of the 3d tic tac toe board (Cells 17-32)
+        a = 0
+        for row in range(5,9):
+            for col in range(4):
+                button_name = f"button_{row-4}{col+1}2"  # Using f-string to create the button identifier
+                button = tk.Button(self.master, text=button_text_second_part[a], width=3, height=1, name=button_name, command=lambda name=button_name: button_click(name))
+                button.grid(row=row, column=col, padx=5, pady=5)
+                a += 1
+
+        # Adds divider between the second and third layer
+        for col in range(4):
+            label = tk.Label(self.master, text=".", width=1, height=1)
+            label.grid(row=9, column=col)
+
+        # Creates cells for the 4x4 grid in layer 3 of the 3d tic tac toe board (Cells 33-48)
+        a = 0
+        for row in range(10,14):
+            for col in range(4):
+                button_name = f"button_{row-9}{col+1}3"  # Using f-string to create the button identifier
+                button = tk.Button(self.master, text=button_text_third_part[a], width=3, height=1, name=button_name, command=lambda name=button_name: button_click(name))
+                button.grid(row=row, column=col, padx=5, pady=5)
+                a += 1
+
+        # Adds divider between the third and fourth layer
+        for col in range(4):
+            label = tk.Label(self.master, text=".", width=1, height=1)
+            label.grid(row=14, column=col)
+
+        # Creates cells for the 4x4 grid in layer 4 of the 3d tic tac toe board (Cells 49-64)
+        a = 0
+        for row in range(15,19):
+            for col in range(4):
+                button_name = f"button_{row-14}{col+1}4"  # Using f-string to create the button identifier
+                button = tk.Button(self.master, text=button_text_fourth_part[a], width=3, height=1, name=button_name, command=lambda name=button_name: button_click(name))
+                button.grid(row=row, column=col, padx=5, pady=5)
+                a += 1
+
+        right_heading_label = tk.Label(self.master, text="...................", font=("Helvetica", 14))
+        right_heading_label.grid(row=0, column=5, rowspan=2, padx=10, pady=10, sticky="N")
+        right_heading_label.pack_forget()
+
+        right_heading_label = tk.Label(self.master, text="Heading on the Right", font=("Helvetica", 14))
+        right_heading_label.grid(row=0, column=6, rowspan=2, padx=10, pady=10, sticky="N")
+
+        right_heading_label = tk.Label(self.master, text=".........Rt", font=("Helvetica", 14))
+        right_heading_label.grid(row=3, column=6, rowspan=2, padx=10, pady=10, sticky="N")
+
+
+
+
+
 
 
 if __name__ == "__main__":
