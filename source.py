@@ -1,72 +1,141 @@
-import tkinter as tk
-from tkinter import messagebox
+import numpy as np
+import goal
+import alpha_beta
 
-class TicTacToeUI:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("3D Tic Tac Toe")
-        self.master.state("zoomed")  # Open the window maximized
-        self.master.geometry("400x300")
 
-        # Heading
-        self.heading_label = tk.Label(self.master, text="3D Tic Tac Toe", font=("Helvetica", 20, "bold"))
-        self.heading_label.pack(pady=10)
+# printing the game board
+def print_board(game_board):
+    print(game_board)
 
-        # Difficulty Selection
-        self.difficulty_label = tk.Label(self.master, text="Select Difficulty", font=("Helvetica", 14))
-        self.difficulty_label.pack(pady=10)
+    # the first batch
+    for i in range(4):
+        print("\n")
+        for j in range(4):
+            print(game_board[i][j], end="  ")
 
-        # Difficulty Buttons
-        self.easy_button = tk.Button(self.master, text="Easy", command=lambda: self.start_game("easy"), bg="yellow", width=10, height=2)
-        self.easy_button.pack(pady=5)
+    print("\n")
+    # the second batch
+    for i in range(4):
+        print("\n")
+        for j in range(4, 8):
+            print(game_board[i][j], end="  ")
 
-        self.difficult_button = tk.Button(self.master, text="Difficult", command=lambda: self.start_game("difficult"), bg="yellow", width=10, height=2)
-        self.difficult_button.pack(pady=5)
+    print("\n")
 
-        self.insane_button = tk.Button(self.master, text="Insane", command=lambda: self.start_game("insane"), bg="yellow", width=10, height=2)
-        self.insane_button.pack(pady=5)
+    # the third batch
+    for i in range(4, 8):
+        print("\n")
+        for j in range(4):
+            print(game_board[i][j], end="  ")
+    print("\n")
+    # the fourth batch
+    for i in range(4, 8):
+        print("\n")
+        for j in range(4, 8):
+            print(game_board[i][j], end="  ")
+    print("\n")
 
-        # Rules Button
-        self.rules_button = tk.Button(self.master, text="Rules", command=self.show_rules, bg="yellow", width=10, height=2)
-        self.rules_button.place(x=20, y=250)
+    print("___________________")
+    print("\n")
 
-    def start_game(self, difficulty):
-        if difficulty == "easy":
-            depth = 2
-        elif difficulty == "difficult":
-            depth = 4
-        elif difficulty == "insane":
-            depth = 6
+
+def main():
+    # assembling the game board
+    game_board = np.zeros((8, 8), dtype=str)
+    for i in range(8):
+        for j in range(8):
+            game_board[i][j] = "."
+    selection = 3
+
+    # Get user input for difficulty level
+    difficulty = input("Select difficulty level (easy, difficult, insane): ").lower()
+    print()
+
+    if difficulty == "easy":
+        depth = 2
+
+    elif difficulty == "difficult":
+        depth = 4
+
+    elif difficulty == "insane":
+        depth = 6
+
+    else:
+        print("Invalid input. Difficulty level set to difficult by default.")
+        depth = 4
+
+    print("Depth of the Alpha-Beta Procedure has been set to : ", depth, "\n")
+
+    if selection == 3:
+        random_num = 0
+        flag_2 = 0
+        beginner = eval(input("Who starts first?! \n1.Computer \n2.User\n"))
+        if beginner == 1:
+            flag = 1
+        elif beginner == 2:
+            flag = 0
         else:
-            depth = 4  # Default depth if difficulty is not recognized
+            print("Invalid input! User starts first by default.")
+            flag = 0
 
-        # Show initial message box
-        initial_message = f"Difficulty selected: {difficulty}\nDepth of the Alpha-Beta Procedure has been set to: {depth}"
-        user_starts_first = messagebox.askyesno("Game Started", initial_message + "\n\nWould you like to make the first move?", icon='question')
+        while True:
+            if flag_2 == 0:
+                print_board(game_board)
+                flag_2 = 1
+            if flag == 0:
+                # run time calculation
+                while True:
+                    try:
+                        user_x, user_y, user_matrix = eval(input("Enter co-ordinates x,y,z : "))
+                        user_y, user_x = user_y - 1, user_x - 1
 
-        if user_starts_first:
-            messagebox.showinfo("Game Started", "User starts first!")
-            self.show_game_board()
+                        if user_matrix == 3:
+                            user_x = user_x + 4
+                        elif user_matrix == 2:
+                            user_y = user_y + 4
+                        elif user_matrix == 4:
+                            user_x = user_x + 4
+                            user_y = user_y + 4
 
-        else:
-            messagebox.showinfo("Game Started", "Computer starts first!")
+                        if game_board[user_x][user_y] == ".":
+                            break
+                        else:
+                            print("\nSelected index is already used!\n")
 
-    def show_rules(self):
-        # Display rules or open a new window with rules here
-        messagebox.showinfo("Rules", "Your rules here.")
+                    except TypeError:
+                        print("\nInvalid input! Try again.\n")
 
-    def show_game_board(self):
-        # Destroy existing widgets in the main window
-        for widget in self.master.winfo_children():
-            widget.destroy()
+                if game_board[user_x][user_y] == ".":
+                    game_board[user_x][user_y] = "X"
+                    print("\nUser's move:")
+                    final_result = goal.is_goal(game_board)
+                    if final_result != "D":
+                        print_board(game_board)
+                        print(final_result, " has won!!")
+                        return
+                    print_board(game_board)
 
-        # Create 4x4 buttons for the Tic Tac Toe board
-        for i in range(4):
-            for j in range(4):
-                button = tk.Button(self.master, text="", width=10, height=2)
-                button.grid(row=i, column=j, padx=5, pady=5)
+            flag = 0
+            # computer's turn
+            if random_num > 0:
+                rand_x = np.random.randint(0, 7)
+                rand_y = np.random.randint(0, 7)
+                while game_board[rand_x][rand_y] != ".":
+                    rand_x = np.random.randint(0, 7)
+                    rand_y = np.random.randint(0, 7)
+                print("Computer's move:")
+                game_board[rand_x][rand_y] = "O"
+                print_board(game_board)
+                random_num -= 1
+            else:
+                board = alpha_beta.Minimax(game_board, "O", depth)
+                print("Computer's move:")
+                final_result = goal.is_goal(board)
+                if final_result != "D":
+                    print_board(board)
+                    print(final_result, " has won!!")
+                    return
+                print_board(board)
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = TicTacToeUI(root)
-    root.mainloop()
+
+main()

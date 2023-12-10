@@ -5,6 +5,8 @@ import alpha_beta
 
 # printing the game board
 def print_board(game_board):
+    print(game_board)
+
     # the first batch
     for i in range(4):
         print("\n")
