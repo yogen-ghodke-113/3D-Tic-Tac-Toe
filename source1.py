@@ -67,7 +67,7 @@ def main():
     print("Depth of the Alpha-Beta Procedure has been set to : ", depth, "\n")
 
     if selection == 3:
-        random_num = 0
+
         flag_2 = 0
         beginner = eval(input("Who starts first?! \n1.Computer \n2.User\n"))
         if beginner == 1:
