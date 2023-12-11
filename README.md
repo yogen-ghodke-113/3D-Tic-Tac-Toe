@@ -3,4 +3,4 @@
 ## To execute the program :
 
   1. Install numpy using pip
-  2. Run source.py
+  2. Run main.py
